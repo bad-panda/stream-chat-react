@@ -597,6 +597,10 @@ export class MessageSimple extends React.PureComponent<
   MessageUIComponentProps,
   any
 > {}
+export class SendButton extends React.Component<
+  any,
+  any
+  > {}
 
 export class Thread extends React.PureComponent<ThreadProps, any> {}
 export class TypingIndicator extends React.PureComponent<
