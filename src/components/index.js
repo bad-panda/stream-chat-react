@@ -16,6 +16,7 @@ export { ChannelListMessenger } from './ChannelListMessenger';
 export { ChannelListTeam } from './ChannelListTeam';
 export { ChannelPreviewCompact } from './ChannelPreviewCompact';
 export { ChannelPreviewMessenger } from './ChannelPreviewMessenger';
+export { ChatAutoComplete } from './ChatAutoComplete';
 export { LoadMorePaginator } from './LoadMorePaginator';
 export { LoadingChannels } from './LoadingChannels';
 export { InfiniteScrollPaginator } from './InfiniteScrollPaginator';

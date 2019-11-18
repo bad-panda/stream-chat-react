@@ -175,6 +175,43 @@ export interface ChannelPreviewUIComponentProps extends ChannelPreviewProps {
   lastRead: Date;
 }
 
+export interface ChatAutoCompleteProps {
+  /** The number of rows you want the textarea to have */
+  rows: number;
+  /** Grow the number of rows of the textarea while you're typing */
+  grow: boolean;
+  /** Make the textarea disabled */
+  disabled: boolean;
+  /** The value of the textarea */
+  value: string;
+  /** Function to run on pasting within the textarea */
+  onPaste?(event: React.ClipboardEventHandler): void;
+  /** Function that runs on submit */
+  handleSubmit?(event: React.FormEvent): void;
+  /** Function that runs on change */
+  onChange?(event: React.ChangeEventHandler): void;
+  /** Placeholder for the textare */
+  placeholder: string;
+  /** What loading component to use for the auto complete when loading results. */
+  LoadingIndicator?: React.ElementType<LoadingIndicatorProps>;
+  /** function to set up your triggers for autocomplete(eg. '@' for mentions, '/' for commands) */
+  trigger?(): object;
+  /** Minimum number of Character */
+  minChar: number;
+  /** Array of [user object](https://getstream.io/chat/docs/#chat-doc-set-user). Used for mentions suggestions */
+  users: Client.User[];
+  /**
+   * Handler for selecting item from suggestions list
+   *
+   * @param item Selected item object.
+   *  */
+  onSelectItem?(item: Client.UserResponse): void;
+  /** Array of [commands](https://getstream.io/chat/docs/#channel_commands) */
+  commands: string[];
+  /** Listener for onfocus event on textarea */
+  onFocus: object;
+}
+
 export interface PaginatorProps {
   /** callback to load the next page */
   loadNextPage(): void;
@@ -564,6 +601,11 @@ export class ChannelPreviewCompact extends React.PureComponent<
 > {}
 export class ChannelPreviewMessenger extends React.PureComponent<
   ChannelPreviewUIComponentProps,
+  any
+> {}
+
+export class ChatAutoComplete extends React.PureComponent<
+  ChatAutoCompleteProps,
   any
 > {}
 
