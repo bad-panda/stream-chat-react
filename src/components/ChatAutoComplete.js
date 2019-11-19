@@ -151,7 +151,7 @@ export class ChatAutoComplete extends PureComponent {
     return (
       <AutoCompleteTextarea
         loadingComponent={LoadingIndicator}
-        trigger={this.getTriggers()}
+        trigger={this.trigger ? this.trigger() : this.getTriggers()}
         replaceWord={this.emojiReplace}
         minChar={0}
         innerRef={
