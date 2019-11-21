@@ -447,6 +447,10 @@ class MessageList extends PureComponent {
         newMessagesNotification: false,
       });
     }
+
+    if (this.props.listenToScroll) {
+      this.props.listenToScroll(offset)
+    }
   };
 
   getLastReceived = (messages) => {
