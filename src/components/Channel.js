@@ -207,7 +207,14 @@ class ChannelInner extends PureComponent {
 
   componentWillUnmount() {
     this.props.client.off('connection.recovered', this.handleEvent);
-    this.props.channel.off(this.handleEvent);
+    try {
+      this.props.channel.off(this.handleEvent);
+    } catch (err) {
+      // off will throw an exception if channel has not finished initializing yet
+      // prob not intended to actually crash unmounting - lets just log this for now
+      console.error(err);
+    }
+
     this._loadMoreFinishedDebounced.cancel();
     this._loadMoreThreadFinishedDebounced.cancel();
 
