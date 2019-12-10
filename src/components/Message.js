@@ -471,6 +471,11 @@ export class Message extends Component {
           this.props.openThread && this.props.openThread.bind(this, message)
         }
         isMyMessage={this.isMyMessage}
+        isAdmin={this.isAdmin}
+        isOwner={this.isOwner}
+        isModerator={this.isModerator}
+        canEditMessage={this.canEditMessage}
+        canDeleteMessage={this.canDeleteMessage}
         channelConfig={config}
         onMentionsClickMessage={this.onMentionsClick}
         onMentionsHoverMessage={this.onMentionsHover}
