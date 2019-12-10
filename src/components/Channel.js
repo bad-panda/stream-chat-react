@@ -7,12 +7,19 @@ import { LoadingErrorIndicator } from './LoadingErrorIndicator';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import Immutable from 'seamless-immutable';
-import Visibility from 'visibilityjs';
 import { logChatPromiseExecution } from 'stream-chat';
 import { MessageSimple } from './MessageSimple';
 import { Attachment } from './Attachment';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
+
+let Visibility;
+try {
+  Visibility = typeof window !== 'undefined' && typeof require !== 'undefined' && eval("require('visibilityjs')");
+} catch (err) {
+  console.warn('Could not require visibilityjs:', err);
+}
+
 /**
  * Channel - Wrapper component for a channel. It needs to be place inside of the Chat component.
  * ChannelHeader, MessageList, Thread and MessageInput should be used as children of the Channel component.
@@ -218,7 +225,7 @@ class ChannelInner extends PureComponent {
     this._loadMoreFinishedDebounced.cancel();
     this._loadMoreThreadFinishedDebounced.cancel();
 
-    if (this.visibilityListener || this.visibilityListener === 0) {
+    if (Visibility && (this.visibilityListener || this.visibilityListener === 0)) {
       Visibility.unbind(this.visibilityListener);
     }
   }
@@ -517,11 +524,13 @@ class ChannelInner extends PureComponent {
     const channel = this.props.channel;
     channel.on(this.handleEvent);
     this.boundMarkRead = this.markRead.bind(this, channel);
-    this.visibilityListener = Visibility.change((e, state) => {
-      if (state === 'visible') {
-        this.boundMarkRead();
-      }
-    });
+    if (Visibility) {
+      this.visibilityListener = Visibility.change((e, state) => {
+        if (state === 'visible') {
+          this.boundMarkRead();
+        }
+      });
+    }
   }
 
   loadMore = async (limit = 100) => {
