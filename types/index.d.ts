@@ -454,7 +454,7 @@ export interface MessageUIComponentProps extends MessageProps {
   handleDelete?(event?: React.BaseSyntheticEvent): void;
   handleFlag?(event?: React.BaseSyntheticEvent): void;
   handleMute?(event?: React.BaseSyntheticEvent): void;
-  handleBan?(event?: React.BaseSyntheticEvent): void;
+  handleBan?(event?: React.BaseSyntheticEvent, options?: object): void;
   handleAction?(
     name: string,
     value: string,

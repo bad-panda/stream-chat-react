@@ -313,8 +313,10 @@ export class Message extends Component {
     }
   };
 
-  handleBan = async (event) => {
-    event.preventDefault();
+  handleBan = async (event, options) => {
+    if (event) {
+      event.preventDefault();
+    }
 
     const {
       getBanUserSuccessNotification,
@@ -323,7 +325,7 @@ export class Message extends Component {
     const message = this.props.message;
 
     try {
-      await this.props.client.banUser(message.user.id);
+      await this.props.channel.banUser(message.user.id, options);
       const successMessage = this.validateAndGetNotificationMessage(
         getBanUserSuccessNotification,
         [message.user],
