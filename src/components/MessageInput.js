@@ -13,11 +13,11 @@ import {
 import { logChatPromiseExecution } from 'stream-chat';
 
 // polyfill for IE11 to make MessageInput functional
-if (!Element.prototype.matches) {
-  Element.prototype.matches =
-    Element.prototype.msMatchesSelector ||
-    Element.prototype.webkitMatchesSelector;
-}
+// if (!Element.prototype.matches) {
+//   Element.prototype.matches =
+//     Element.prototype.msMatchesSelector ||
+//     Element.prototype.webkitMatchesSelector;
+// }
 
 /**
  * MessageInput - Input a new message, support for all the rich features such as image uploads, @mentions, emoticons etc.
