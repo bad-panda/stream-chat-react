@@ -88,6 +88,24 @@ export class Message extends Component {
      *
      * */
     getMuteUserErrorNotification: PropTypes.func,
+    /**
+     * Function that returns message/text as string to be shown as notification, when request for banning a user is successful
+     *
+     * This function should accept following params:
+     *
+     * @param user A user object which is being muted
+     *
+     * */
+    getBanUserSuccessNotification: PropTypes.func,
+    /**
+     * Function that returns message/text as string to be shown as notification, when request for banning a user runs into error
+     *
+     * This function should accept following params:
+     *
+     * @param user A user object which is being muted
+     *
+     * */
+    getBanUserErrorNotification: PropTypes.func,
     /** Latest message id on current channel */
     lastReceivedId: PropTypes.string,
     /** DOMRect object for parent MessageList component */
@@ -295,6 +313,41 @@ export class Message extends Component {
     }
   };
 
+  handleBan = async (event) => {
+    event.preventDefault();
+
+    const {
+      getBanUserSuccessNotification,
+      getBanUserErrorNotification,
+    } = this.props;
+    const message = this.props.message;
+
+    try {
+      await this.props.client.banUser(message.user.id);
+      const successMessage = this.validateAndGetNotificationMessage(
+        getBanUserSuccessNotification,
+        [message.user],
+      );
+
+      this.props.addNotification(
+        successMessage
+          ? successMessage
+          : `User with id ${message.user.id} has been banned`,
+        'success',
+      );
+    } catch (e) {
+      const errorMessage = this.validateAndGetNotificationMessage(
+        getBanUserErrorNotification,
+        [message.user],
+      );
+
+      this.props.addNotification(
+        errorMessage ? errorMessage : 'Error banning a user ...',
+        'error',
+      );
+    }
+  };
+
   handleEdit = (event) => {
     if (event !== undefined && event.preventDefault) {
       event.preventDefault();
@@ -463,6 +516,7 @@ export class Message extends Component {
         getMessageActions={this.getMessageActions}
         handleFlag={this.handleFlag}
         handleMute={this.handleMute}
+        handleBan={this.handleBan}
         handleAction={this.handleAction}
         handleDelete={this.handleDelete}
         handleEdit={this.handleEdit}

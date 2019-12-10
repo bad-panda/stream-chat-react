@@ -102,6 +102,24 @@ class MessageList extends PureComponent {
      *
      * */
     getMuteUserErrorNotification: PropTypes.func,
+    /**
+     * Function that returns message/text as string to be shown as notification, when request for banning a user is successful
+     *
+     * This function should accept following params:
+     *
+     * @param user A user object which is being banned
+     *
+     * */
+    getBanUserSuccessNotification: PropTypes.func,
+    /**
+     * Function that returns message/text as string to be shown as notification, when request for banning a user runs into error
+     *
+     * This function should accept following params:
+     *
+     * @param user A user object which is being banned
+     *
+     * */
+    getBanUserErrorNotification: PropTypes.func,
     /** **Available from [chat context](https://getstream.github.io/stream-chat-react/#chat)** */
     client: PropTypes.object,
     /** **Available from [channel context](https://getstream.github.io/stream-chat-react/#channel)** */
@@ -744,6 +762,12 @@ class MessageList extends PureComponent {
               }
               getMuteUserErrorNotification={
                 this.props.getMuteUserErrorNotification
+              }
+              getBanUserSuccessNotification={
+                this.props.getBanUserSuccessNotification
+              }
+              getBanUserErrorNotification={
+                this.props.getBanUserErrorNotification
               }
             />
           </li>,

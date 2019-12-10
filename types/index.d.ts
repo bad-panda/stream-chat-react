@@ -300,6 +300,8 @@ export interface MessageListProps extends ChannelContextValue {
   getFlagMessageErrorNotification?(message: MessageResponse): string;
   getMuteUserSuccessNotification?(message: MessageResponse): string;
   getMuteUserErrorNotification?(message: MessageResponse): string;
+  getBanUserSuccessNotification?(message: MessageResponse): string;
+  getBanUserErrorNotification?(message: MessageResponse): string;
 }
 
 export interface ChannelHeaderProps extends ChannelContextValue {
@@ -420,6 +422,8 @@ export interface MessageProps {
   getFlagMessageErrorNotification?(message: MessageResponse): string;
   getMuteUserSuccessNotification?(message: MessageResponse): string;
   getMuteUserErrorNotification?(message: MessageResponse): string;
+  getBanUserSuccessNotification?(message: MessageResponse): string;
+  getBanUserErrorNotification?(message: MessageResponse): string;
   lastReceivedId?: string | null;
   messageListRect?: DOMRect;
   members?: SeamlessImmutable.Immutable<{ [user_id: string]: Client.Member }>;
@@ -450,6 +454,7 @@ export interface MessageUIComponentProps extends MessageProps {
   handleDelete?(event?: React.BaseSyntheticEvent): void;
   handleFlag?(event?: React.BaseSyntheticEvent): void;
   handleMute?(event?: React.BaseSyntheticEvent): void;
+  handleBan?(event?: React.BaseSyntheticEvent): void;
   handleAction?(
     name: string,
     value: string,

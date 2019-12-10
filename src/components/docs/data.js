@@ -309,6 +309,7 @@ export const users = [
 export const MessageMock = {
   handleFlag: console.log,
   handleMute: console.log,
+  handleBan: console.log,
   handleEdit: console.log,
   handleDelete: console.log,
   canDeleteMessage: () => true,

@@ -14,6 +14,7 @@ The Message component provides the following functions to the rendered component
 - **canDeleteMessage** returns true if current user has permission to edit message.
 - **handleFlag** Handler to flag a message
 - **handleMute** Handler to mute a user of message
+- **handleBan** Handler to mute a user of message
 - **handleEdit** Handler to edit a message
 - **handleDelete** Handler to delete a message
 - **handleReaction** Handler to add/remove reaction on message
