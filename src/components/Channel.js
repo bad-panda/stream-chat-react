@@ -110,7 +110,7 @@ class Channel extends PureComponent {
     // }
     // We use a wrapper to make sure the key variable is set.
     // this ensures that if you switch channel the component is recreated
-    return <ChannelInner {...this.props} key={!!this.props.channel && this.props.channel.cid} />;
+    return <ChannelInner {...this.props} key={!!this.props.cid ? this.props.cid : (!!this.props.channel && this.props.channel.cid)} />;
   }
 }
 
