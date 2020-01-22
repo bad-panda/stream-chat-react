@@ -105,12 +105,12 @@ class Channel extends PureComponent {
   };
 
   render() {
-    if (!this.props.channel.cid) {
-      return null; // <div>Select a channel</div>;
-    }
+    // if (!this.props.channel.cid) {
+    //   return null; // <div>Select a channel</div>;
+    // }
     // We use a wrapper to make sure the key variable is set.
     // this ensures that if you switch channel the component is recreated
-    return <ChannelInner {...this.props} key={this.props.channel.cid} />;
+    return <ChannelInner {...this.props} key={!!this.props.channel && this.props.channel.cid} />;
   }
 }
 
@@ -631,21 +631,21 @@ class ChannelInner extends PureComponent {
     const LoadingIndicator = this.props.LoadingIndicator;
     const LoadingErrorIndicator = this.props.LoadingErrorIndicator;
 
-    if (this.state.error) {
-      core = (
-        <LoadingErrorIndicator error={this.state.error}></LoadingErrorIndicator>
-      );
-    } else if (this.state.loading) {
-      core = <LoadingIndicator size={25} isLoading={true} />;
-    } else if (!this.props.channel || !this.props.channel.watch) {
-      core = <div>Channel Missing</div>;
-    } else {
+    // if (this.state.error) {
+    //   core = (
+    //     <LoadingErrorIndicator error={this.state.error}></LoadingErrorIndicator>
+    //   );
+    // } else if (this.state.loading) {
+    //   core = <LoadingIndicator size={25} isLoading={true} />;
+    // } else if (!this.props.channel || !this.props.channel.watch) {
+    //   core = <div>Channel Missing</div>;
+    // } else {
       core = (
         <ChannelContext.Provider value={this.getContext()}>
           <div className="str-chat__container">{this.renderComponent()}</div>
         </ChannelContext.Provider>
       );
-    }
+    // }
 
     return (
       <div className={`str-chat str-chat-channel ${this.props.theme}`}>
