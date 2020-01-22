@@ -432,14 +432,14 @@ class ChannelList extends PureComponent {
   // new channel list // *********************************
 
   _renderChannel = (item) => {
-    const { Preview, setActiveChannel, channel, watchers } = this.props;
+    const { Preview, channel, watchers } = this.props;
     if (!item) return;
     const props = {
       channel: item,
       activeChannel: channel,
       closeMenu: this.closeMenu,
       Preview,
-      setActiveChannel,
+      setActiveChannel: this._setActiveChannel,
       watchers,
       key: item.id,
       // To force the update of preview component upon channel update.
@@ -448,6 +448,13 @@ class ChannelList extends PureComponent {
     };
     return smartRender(ChannelPreview, { ...props });
   };
+
+  _setActiveChannel = (...args) => {
+    if (typeof this.props.onSelect === 'function') {
+      this.props.onSelect(...args);
+    }
+    return this.props.setActiveChannel(...args);
+  }
 
   render() {
     const { List, Paginator } = this.props;
@@ -476,7 +483,7 @@ class ChannelList extends PureComponent {
             loading={loadingChannels}
             error={this.state.error}
             channels={channels}
-            setActiveChannel={this.props.setActiveChannel}
+            setActiveChannel={this._setActiveChannel}
             activeChannel={this.props.channel}
             showSidebar={this.props.showSidebar}
           >
