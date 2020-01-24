@@ -649,6 +649,7 @@ class ChannelInner extends PureComponent {
 
     return (
       <div className={`str-chat str-chat-channel ${this.props.theme}`}>
+        {!!this.state.error && <LoadingErrorIndicator error={this.state.error}></LoadingErrorIndicator>}
         {core}
       </div>
     );
