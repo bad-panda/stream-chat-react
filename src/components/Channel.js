@@ -449,6 +449,7 @@ class ChannelInner extends PureComponent {
       }
 
       if (
+        Visibility &&
         mainChannelUpdated &&
         e.message.user.id !== this.props.client.userID
       ) {
