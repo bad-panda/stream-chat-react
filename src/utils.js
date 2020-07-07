@@ -1,9 +1,10 @@
-import anchorme from 'anchorme';
+/* eslint-disable */
 import emojiRegex from 'emoji-regex';
 import ReactMarkdown from 'react-markdown/with-html';
 import truncate from 'lodash/truncate';
 import data from 'emoji-mart/data/all.json';
 import React from 'react';
+import { find as linkifyFind } from 'linkifyjs/lib/linkify';
 
 export const emojiSetDef = {
   spriteUrl: 'https://getstream.imgix.net/images/emoji-sprite.png',
@@ -18,7 +19,7 @@ export const commonEmoji = {
   short_names: [],
   custom: true,
 };
-
+/** @type {import("types").MinimalEmojiInterface[]} */
 export const defaultMinimalEmojis = [
   {
     id: 'like',
@@ -95,12 +96,21 @@ export const isPromise = (thing) => thing && typeof thing.then === 'function';
 export const byDate = (a, b) => a.created_at - b.created_at;
 
 // https://stackoverflow.com/a/29234240/7625485
-export const formatArray = (dict) => {
+/**
+ * @deprecated This function is deprecated and will be removed in future major release.
+ * @param {*} dict
+ * @param {*} currentUserId
+ */
+export const formatArray = (dict, currentUserId) => {
   const arr2 = Object.keys(dict);
   const arr3 = [];
-  arr2.forEach((item, i) =>
-    arr3.push(dict[arr2[i]].user.name || dict[arr2[i]].user.id),
-  );
+  arr2.forEach((item, i) => {
+    if (currentUserId === dict[arr2[i]].user.id) {
+      return;
+    }
+
+    arr3.push(dict[arr2[i]].user.name || dict[arr2[i]].user.id);
+  });
   let outStr = '';
   if (arr3.length === 1) {
     outStr = arr3[0] + ' is typing...';
@@ -122,44 +132,59 @@ export const formatArray = (dict) => {
   return outStr;
 };
 
+const allowedMarkups = [
+  'html',
+  'root',
+  'text',
+  'break',
+  'paragraph',
+  'emphasis',
+  'strong',
+  'link',
+  'list',
+  'listItem',
+  'code',
+  'inlineCode',
+  'blockquote',
+  'delete',
+];
+
+const matchMarkdownLinks = (message) => {
+  const regexMdLinks = /\[([^\[]+)\](\(.*\))/gm;
+  const matches = message.match(regexMdLinks);
+  const singleMatch = /\[([^\[]+)\]\((.*)\)/;
+
+  const links = matches
+    ? matches.map((match) => singleMatch.exec(match)[2])
+    : [];
+  return links;
+};
+
 export const renderText = (message) => {
   // take the @ mentions and turn them into markdown?
   // translate links
-  let { text } = message;
-  const { mentioned_users } = message;
+  const { text, mentioned_users } = message;
+  if (!text) return null;
 
-  if (!text) {
-    return;
-  }
+  let newText = message.text;
+  let markdownLinks = matchMarkdownLinks(newText);
+  // extract all valid links/emails within text and replace it with proper markup
+  linkifyFind(newText).forEach(({ type, href, value }) => {
+    // check if message is already  markdown
+    const noParsingNeeded =
+      markdownLinks &&
+      markdownLinks.filter((text) => text.indexOf(href) !== -1);
+    if (noParsingNeeded.length > 0) return;
 
-  const allowed = [
-    'html',
-    'root',
-    'text',
-    'break',
-    'paragraph',
-    'emphasis',
-    'strong',
-    'link',
-    'list',
-    'listItem',
-    'code',
-    'inlineCode',
-    'blockquote',
-  ];
-
-  const urls = anchorme(text, {
-    list: true,
+    const displayLink =
+      type === 'email'
+        ? value
+        : truncate(value.replace(/(http(s?):\/\/)?(www\.)?/, ''), {
+            length: 20,
+          });
+    newText = newText.replace(value, `[${displayLink}](${encodeURI(href)})`);
   });
-  for (const urlInfo of urls) {
-    const displayLink = truncate(urlInfo.encoded.replace(/^(www\.)/, ''), {
-      length: 20,
-      omission: '...',
-    });
-    const mkdown = `[${displayLink}](${urlInfo.protocol}${urlInfo.encoded})`;
-    text = text.replace(urlInfo.raw, mkdown);
-  }
-  let newText = text;
+
   if (mentioned_users && mentioned_users.length) {
     for (let i = 0; i < mentioned_users.length; i++) {
       const username = mentioned_users[i].name || mentioned_users[i].id;
@@ -171,12 +196,20 @@ export const renderText = (message) => {
 
   return (
     <ReactMarkdown
-      allowedTypes={allowed}
+      allowedTypes={allowedMarkups}
       source={newText}
       linkTarget="_blank"
       plugins={[]}
       escapeHtml={true}
       skipHtml={false}
+      unwrapDisallowed={true}
+      transformLinkUri={(uri) => {
+        if (uri.startsWith('app://')) {
+          return uri;
+        } else {
+          return require('react-markdown').uriTransformer(uri);
+        }
+      }}
     />
   );
 };
@@ -215,9 +248,52 @@ export const smartRender = (ElementOrComponentOrLiteral, props, fallback) => {
   return <ComponentOrLiteral {...props} />;
 };
 
-export const MESSAGE_ACTIONS = {
-  edit: 'edit',
-  delete: 'delete',
-  flag: 'flag',
-  mute: 'mute',
+export const filterEmoji = (emoji) => {
+  if (
+    emoji.name === 'White Smiling Face' ||
+    emoji.name === 'White Frowning Face'
+  ) {
+    return false;
+  }
+  return true;
+};
+
+export const getReadByTooltipText = (users, t, client) => {
+  let outStr = '';
+  // first filter out client user, so restLength won't count it
+  const otherUsers = users
+    .filter((item) => item && item.id !== client.user.id)
+    .map((item) => item.name || item.id);
+
+  const slicedArr = otherUsers.slice(0, 5);
+  const restLength = otherUsers.length - slicedArr.length;
+
+  if (slicedArr.length === 1) {
+    outStr = slicedArr[0] + ' ';
+  } else if (slicedArr.length === 2) {
+    //joins all with "and" but =no commas
+    //example: "bob and sam"
+    outStr = t('{{ firstUser }} and {{ secondUser }}', {
+      firstUser: slicedArr[0],
+      secondUser: slicedArr[1],
+    });
+  } else if (slicedArr.length > 2) {
+    //joins all with commas, but last one gets ", and" (oxford comma!)
+    //example: "bob, joe, sam and 4 more"
+    if (restLength === 0) {
+      // mutate slicedArr to remove last user to display it separately
+      const lastUser = slicedArr.splice(slicedArr.length - 2, 1);
+      outStr = t('{{ commaSeparatedUsers }}, and {{ lastUser }}', {
+        commaSeparatedUsers: slicedArr.join(', '),
+        lastUser,
+      });
+    } else {
+      outStr = t('{{ commaSeparatedUsers }} and {{ moreCount }} more', {
+        commaSeparatedUsers: slicedArr.join(', '),
+        moreCount: restLength,
+      });
+    }
+  }
+
+  return outStr;
 };

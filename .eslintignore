@@ -3,12 +3,16 @@ build
 /.cache/
 /public/static/styles.js
 examples/*/src/serviceWorker.js
+scripts/
 /dist/
 /lib/
 /bin/
 /include/
 /build/
-*.test.js
 dist
 *dist*
 /src/styles/vendor/
+*.md
+babel.i18next-extract.js
+/built
+/coverage
