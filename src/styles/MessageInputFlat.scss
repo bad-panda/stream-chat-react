@@ -2,10 +2,18 @@
   background: white;
   padding: 10px 40px;
   position: relative;
+  z-index: 1;
+  width: 100%;
+
+  &-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
   .str-chat__textarea {
     flex: 1;
   }
-  textarea {
+  .str-chat__textarea > textarea {
     min-height: 56px;
     background: rgba(0, 0, 0, 0.05);
     border-radius: 8px;
@@ -41,6 +49,26 @@
 
   &--textarea-wrapper {
     display: flex;
+    flex: 1 0;
+    position: relative;
+
+    .str-chat__fileupload-wrapper {
+      .str-chat__tooltip {
+        bottom: 45px;
+        right: 25px;
+      }
+    }
+    .str-chat__emojiselect-wrapper {
+      .str-chat__tooltip {
+        bottom: 50px;
+        left: 32px;
+        right: unset;
+        &:after {
+          left: 5px;
+          right: unset;
+        }
+      }
+    }
   }
 
   &--emojipicker {
@@ -48,10 +76,14 @@
     bottom: calc(100%);
   }
 
+  .rfu-file-previewer {
+    width: 100%;
+  }
+
   .rfu-file-upload-button {
     position: absolute;
     top: calc(100% - 40px);
-    right: 55px;
+    right: 25px;
 
     svg {
       fill: #000;
@@ -60,13 +92,11 @@
         opacity: 1;
       }
     }
-    @media screen and (min-width: 768px) {
-      right: 25px;
-    }
   }
 }
 
 .rfu-image-previewer {
+  flex: 1 1 100%;
   &__image {
     width: 60px !important;
     height: 60px !important;

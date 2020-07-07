@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import { StreamChat } from 'stream-chat';
 import {
@@ -34,7 +35,7 @@ class App extends Component {
       },
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZXhhbXBsZS11c2VyIn0.HlC0dMKL43y3K_XbfvQS_Yc3V314HU4Z7LrBLil777g',
     );
-    this.channel = this.chatClient.channel('messaging', channelName, {
+    this.channel = this.chatClient.channel('commerce', channelName, {
       image: 'https://i.stack.imgur.com/e7G42m.jpg',
       name: 'Hello 👋',
       subtitle: 'Chat with us about NASA stuff!',
